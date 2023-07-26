@@ -11,6 +11,8 @@ jobs:
   test_actions:
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout Code
+        uses: actions/checkout@v2
       - name: setting up workspace
         uses: jeeshan12/resusable_workflows/.github/actions/setup/workspace/action.yaml@v1.0.1
         with:
