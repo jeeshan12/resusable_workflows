@@ -17,12 +17,14 @@ runs:
 
     # Add steps specific to the language and version here
     - name: Setup Node.js
+      shell: bash
       if: ${{ inputs.language == 'node' }}
       run: |
         echo "Setting up Node.js ${VERSION}"
         # Add Node.js setup commands here
 
     - name: Setup Python
+      shell: bash
       if: ${{ inputs.language == 'python' }}
       run: |
         echo "Setting up Python ${VERSION}"
