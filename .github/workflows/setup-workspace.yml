@@ -1,0 +1,21 @@
+name: Building the buildx
+
+on:
+  workflow_call:
+    inputs:
+      fileName:
+        required: false
+        type: string
+
+jobs:
+  test_actions:
+    runs-on: ubuntu-latest
+    steps:
+      - name: setting up workspace
+        uses: jeeshan12/resusable_workflows/.github/actions/setup/workspace/action.yaml@v1.0.1
+        with:
+          version: "14.x"
+      - name: check node version
+        shell: bash
+        run: |
+          node -v
