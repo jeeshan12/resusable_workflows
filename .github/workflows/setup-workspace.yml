@@ -17,7 +17,7 @@ jobs:
       WORKING_DIRECTORY_PATH: ${{inputs.working-directory}}
     steps:
       - name: setting up workspace
-        uses: jeeshan12/resusable_workflows/.github/actions/setup/workspace/@v2.0.2
+        uses: jeeshan12/resusable_workflows/.github/actions/setup/workspace@v2.0.2
         with:
           version: ${{inputs.version}}
       - name: check node version
