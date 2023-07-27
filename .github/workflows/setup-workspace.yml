@@ -3,18 +3,23 @@ name: Building the buildx
 on:
   workflow_call:
     inputs:
-      fileName:
-        required: false
+      working-directory:
         type: string
+        default: "."
+      version:
+        type: string
+        default: "14.x"
 
 jobs:
   test_actions:
     runs-on: ubuntu-latest
+    env:
+      WORKING_DIRECTORY_PATH: ${{inputs.working-directory}}
     steps:
       - name: setting up workspace
-        uses: jeeshan12/resusable_workflows/.github/actions/setup/workspace/action.yaml@v2.0.0
+        uses: jeeshan12/resusable_workflows/.github/actions/setup/workspace/action.yaml@v2.0.1
         with:
-          version: "14.x"
+          version: ${{inputs.version}}
       - name: check node version
         shell: bash
         run: |
