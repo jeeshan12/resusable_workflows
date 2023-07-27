@@ -17,9 +17,14 @@ jobs:
       WORKING_DIRECTORY_PATH: ${{inputs.working-directory}}
     steps:
       - name: Printing the data to console
-        uses: jeeshan12/resusable_workflows/.github/actions/setup/workspace@v2.0.4
+        uses: jeeshan12/resusable_workflows/.github/actions/setup/workspace@v2.0.5
         with:
           version: ${{inputs.version}}
+      - name: Checkout the target branch
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
       - name: check node version
         shell: bash
         run: |
