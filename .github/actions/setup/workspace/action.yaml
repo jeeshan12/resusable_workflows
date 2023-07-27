@@ -14,7 +14,8 @@ runs:
   steps:
     - name: Checkout Code
       uses: actions/checkout@v2
-
+      with:
+        fetch-depth: 0
     # Add steps specific to the language and version here
     - name: Setup Node.js
       shell: bash
