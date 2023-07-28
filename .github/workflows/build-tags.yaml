@@ -16,7 +16,7 @@ on:
         required: true
         default: "."
     outputs:
-      tage-name:
+      tag-name:
         value: ${{ jobs.test_actions.outputs.tag-name }}
         description: Output image tag
 
