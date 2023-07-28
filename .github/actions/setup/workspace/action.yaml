@@ -12,6 +12,10 @@ inputs:
 runs:
   using: 'composite'
   steps:
+    - name: Checkout the target branch
+      uses: actions/checkout@755da8c3cf115ac066823e79a1e1788f8940201b
+      with:
+        fetch-depth: 0
     # Add steps specific to the language and version here
     - name: Setup Node.js
       shell: bash
