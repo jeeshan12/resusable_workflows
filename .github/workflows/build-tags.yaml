@@ -1,0 +1,43 @@
+name: Building the buildx
+
+on:
+  workflow_call:
+    inputs:
+      role:
+        type: string
+        default: "87897987"
+      aws_region:
+        description: "AWS region"
+        type: string
+        required: true
+        default: "us-east-1"
+      working-directory:
+        type: string
+        required: true
+        default: "."
+    outputs:
+      tage-name:
+        value: ${{ jobs.test_actions.outputs.tag-name }}
+        description: Output image tag
+
+jobs:
+  test_actions:
+    runs-on: ubuntu-latest
+    env:
+      WORKING_DIRECTORY_PATH: ${{inputs.working-directory}}
+    outputs:
+      tage-name: ${{steps.docker-image-tag.outputs.tag-name}}
+    steps:
+      - name: checkout the workspace
+        uses: jeeshan12/resusable_workflows/.github/actions/setup/workspace@v2.0.7
+
+      - name: Genrate tag for docker
+        id: docker-image-tag
+        uses: jeeshan12/resusable_workflows/.github/actions/setup/tags@v2.0.7
+        with:
+          role: ${{inputs.role}}
+          aws_region: ${{inputs.aws_region}}
+
+      - name: "Image tag"
+        shell: bash
+        run: echo -e "Image is   tag ${{ steps.docker-image-tag.outputs.tag-name }}"

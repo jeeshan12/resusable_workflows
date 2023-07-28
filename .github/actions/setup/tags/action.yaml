@@ -1,0 +1,28 @@
+name: "Docker tags"
+description: >
+    Action to generate the docker tag
+inputs:
+  role:
+    description: 'AWS role'
+    required: true
+    default: '8585'
+  aws_region:
+    description: 'AWS region'
+    required: true
+    default: 'us-east-1'
+outputs:
+  tag-name:
+     description: "The tag created for the Docker image "
+     value: ${{steps.tag.outputs.tag-name}}
+runs:
+  using: composite
+  steps:
+     -  name: Prepare the tag for docker build
+        id: tag
+        shell: bash
+        run: |
+          TAG=$(echo $GITHUB_SHA | head -c7)
+          IMAGE="${{inputs.role}}.efg.ecr.${{inputs.aws_region}}.amazonaws.com/test"
+          echo $IMAGE
+          echo "tag-name=${IMAGE}:$TAG" >> $GITHUB_OUTPUT
+          echo $tag-name

@@ -20,6 +20,7 @@ jobs:
         uses: jeeshan12/resusable_workflows/.github/actions/setup/workspace@v2.0.6
         with:
           version: ${{inputs.version}}
+          inputs: ${{inputs.version}}
 
       - name: check node version
         shell: bash

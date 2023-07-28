@@ -1,0 +1,24 @@
+name: 'Set up buildx'
+description: 'Set up buildx for bulding docker images'
+inputs:
+  role:
+    description: 'AWS role'
+    required: true
+    default: '12123'
+  aws_region:
+    description: 'AWS region'
+    required: true
+    default: 'us-east-1'
+runs:
+  using: 'composite'
+  steps:
+     - name: Set up Docker Buildx
+       id: buildx
+       uses: docker/setup-buildx-action@v2
+
+
+
+
+
+
+
