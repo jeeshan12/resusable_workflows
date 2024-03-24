@@ -7,6 +7,10 @@ on:
 jobs:
   commitlint:
     runs-on: ubuntu-22.04
+
+    container:
+      image: node:latest
+
     steps:
       - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 #v4.1.1
         with:
@@ -26,6 +30,14 @@ jobs:
           node --version
           npm --version
           npx commitlint --version
+
+      - name: Use Node.js specified in .nvmrc
+        run: |
+          curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.38.0/install.sh | bash
+          export NVM_DIR="$HOME/.nvm"
+          [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+          nvm install
+          nvm use
 
       - name: Install commitlint
         run: |
