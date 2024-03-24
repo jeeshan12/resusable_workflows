@@ -1,23 +1,23 @@
-name: 'Login to ECR'
-description: 'Sets up the aws and ecr login'
+name: "Login to ECR"
+description: "Sets up the aws and ecr login"
 inputs:
   role:
-    description: 'AWS role'
+    description: "AWS role"
     required: true
-    default: '09090'
+    default: "09090"
   aws_region:
-    description: 'AWS region'
+    description: "AWS region"
     required: true
-    default: 'us-east-1'
+    default: "us-east-1"
 runs:
-  using: 'composite'
+  using: "composite"
   steps:
     - name: Configure AWS Credentials
       uses: aws-actions/configure-aws-credentials@v2
       with:
-          role-to-assume: arn:aws:iam::${{ inputs.role }}:role/github_actions_role
-          aws-region: ${{ inputs.aws_region }}
-          mask-aws-account-id: "no"
+        role-to-assume: arn:aws:iam::${{ inputs.role }}:role/github_actions_role
+        aws-region: ${{ inputs.aws_region }}
+        mask-aws-account-id: "no"
     - name: Login to Amazon ECR
       id: login-ecr
       uses: aws-actions/amazon-ecr-login@v2
