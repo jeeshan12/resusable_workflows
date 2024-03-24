@@ -30,11 +30,12 @@ jobs:
           npx semantic-release
           SEMANTIC_RELEASE_EXIT_CODE=$?
           if [ $SEMANTIC_RELEASE_EXIT_CODE -eq 0 ]; then
-          npm version patch --no-git-tag-version
+            npm version patch --no-git-tag-version
             git config --local user.email "action@github.com"
             git config --local user.name "GitHub Action"
             git add package.json
             git commit -m "Updated package.json after the release"
             git push
+          fi
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
