@@ -12,6 +12,11 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: Update apt and fix broken packages
+        run: |
+          sudo apt update
+          sudo apt --fix-broken install -y
+
       - name: Install required dependencies
         run: |
           sudo apt update
