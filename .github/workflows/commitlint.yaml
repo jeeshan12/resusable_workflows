@@ -7,41 +7,30 @@ jobs:
   commitlint:
     runs-on: ubuntu-22.04
 
-    container:
-      image: node:latest
-
     steps:
       - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 #v4.1.1
         with:
           fetch-depth: 0
 
-      - name: Install required dependencies
+      - name: Update apt and fix broken packages
         run: |
-          apt update
-          apt install -y sudo
-          sudo apt install -y git curl
-          curl -sL https://deb.nodesource.com/setup_14.x | sudo -E bash -
-          sudo DEBIAN_FRONTEND=noninteractive apt install -y nodejs
+          sudo apt update
+          sudo apt --fix-broken install -y
+
+      - name: Set up node
+        uses: actions/setup-node@60edb5dd545a775178f52524783378180af0d1f8 #v4.0.2
+        with:
+          node-version-file: ".nvmrc"
 
       - name: Print versions
         run: |
           git --version
           node --version
           npm --version
-          npx commitlint --version
 
-      - name: Use Node.js specified in .nvmrc
+      - name: Install dependecies
         run: |
-          curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.38.0/install.sh | bash
-          export NVM_DIR="$HOME/.nvm"
-          [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
-          nvm install
-          nvm use
-
-      - name: Install commitlint
-        run: |
-          npm install -g conventional-changelog-conventionalcommits
-          npm install -g commitlint@latest
+          npm ci
 
       - name: Validate current commit (last commit) with commitlint
         if: github.event_name == 'push'
