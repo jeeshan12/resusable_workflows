@@ -7,10 +7,6 @@ jobs:
   commitlint:
     runs-on: ubuntu-22.04
 
-    container:
-      image: node:latest
-      options: --user root
-
     steps:
       - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 #v4.1.1
         with:
@@ -21,7 +17,7 @@ jobs:
           apt update
           apt install -y sudo
           sudo apt install -y git curl
-          curl -sL https://deb.nodesource.com/setup_14.x | sudo -E bash -
+          curl -sL https://deb.nodesource.com/setup_20.x | sudo -E bash -
           sudo DEBIAN_FRONTEND=noninteractive apt install -y nodejs
 
       - name: Print versions
@@ -30,14 +26,6 @@ jobs:
           node --version
           npm --version
           npx commitlint --version
-
-      - name: Use Node.js specified in .nvmrc
-        run: |
-          curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.38.0/install.sh | bash
-          export NVM_DIR="$HOME/.nvm"
-          [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
-          nvm install
-          nvm use
 
       - name: Install commitlint
         run: |
