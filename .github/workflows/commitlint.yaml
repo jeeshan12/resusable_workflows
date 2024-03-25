@@ -17,12 +17,10 @@ jobs:
           sudo apt update
           sudo apt --fix-broken install -y
 
-      - name: Install required dependencies
-        run: |
-          sudo apt update
-          sudo apt install -y git curl
-          curl -fsSL https://deb.nodesource.com/setup_20.x | sudo -E bash -
-          sudo apt install -y nodejs npm
+      - name: Set up node
+        uses: actions/setup-node@60edb5dd545a775178f52524783378180af0d1f8 #v4.0.2
+        with:
+          node-version-file: ".nvmrc"
 
       - name: Print versions
         run: |
