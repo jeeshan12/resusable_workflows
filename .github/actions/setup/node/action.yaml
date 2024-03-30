@@ -1,0 +1,22 @@
+name: "Install node"
+description: >
+    Action to install the node in workspace
+
+inputs:
+  nvmrc-file:
+    description: 'Node version file to install the node version'
+    required: false
+    default: ''
+  node-version:
+    description: 'Node version  to install '
+    required: false
+    default: '20.x'
+
+runs:
+  using: composite
+  steps:
+     -  name: Prepare the tag for docker image
+        uses: actions/setup-node@60edb5dd545a775178f52524783378180af0d1f8 #v4.0.2
+        with:
+          node-version-file: ${{ inputs.nvmrc-file }}
+          node-version: ${{ inputs.node-version }}
