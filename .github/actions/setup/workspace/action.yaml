@@ -1,32 +1,33 @@
-name: 'Setup Workspace Action'
+name: 'Setup Project Workspace'
 description: 'Sets up the workspace for the project'
+
 inputs:
-  language:
-    description: 'Programming language for the project'
-    required: true
-    default: 'node'
-  version:
-    description: 'Version of the programming language'
-    required: true
-    default: '14.x'
+  repository:
+    description: 'Name of the repository to checkout'
+    required: false
+    default: ''
+  ref:
+    description: Branch, tag or SHA to checkout
+    required: false
+    default: ''
+  token:
+    description: 'Personal access token to checkout multiple repositories'
+    required: false
+    default: ''
+  path:
+   description: "Relative path to place the repository"
+   required: false
+   default: ''
+
 runs:
   using: 'composite'
   steps:
     - name: Checkout the target branch
-      uses: actions/checkout@755da8c3cf115ac066823e79a1e1788f8940201b
+      uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 #v4.1.1
       with:
         fetch-depth: 0
-    # Add steps specific to the language and version here
-    - name: Setup Node.js
-      shell: bash
-      if: ${{ inputs.language == 'node' }}
-      run: |
-        echo "Setting up Node.js ${VERSION}"
-        # Add Node.js setup commands here
+        repository: ${{ inputs.repository  == '' && github.repository || inputs.repository }}
+        ref: ${{ inputs.ref }}
+        token: ${{ inputs.token  == '' && github.token || inputs.token }}
+        path: ${{ inputs.path }}
 
-    - name: Setup Python
-      shell: bash
-      if: ${{ inputs.language == 'python' }}
-      run: |
-        echo "Setting up Python ${VERSION}"
-        # Add Python setup commands here
