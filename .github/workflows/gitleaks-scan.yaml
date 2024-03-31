@@ -3,9 +3,9 @@ name: Gitleaks for secret scaaning on CI
 on:
   workflow_call:
     secrets:
-      GITHUB_TOKEN:
+      token:
         description: Github token for workflow
-        required: false
+        required: true
 
 jobs:
   commitlint:
@@ -19,7 +19,7 @@ jobs:
       - name: Scanning for gitleaks
         uses: gitleaks/gitleaks-action@e6dab246340401bf53eec993b8f05aebe80ac636 #v2.3.4
         with:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.token }}
 
 
 
