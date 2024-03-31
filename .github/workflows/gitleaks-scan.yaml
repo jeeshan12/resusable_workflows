@@ -1,0 +1,21 @@
+name: Gitleaks for secret scaaning on CI
+
+on:
+  workflow_call:
+
+jobs:
+  commitlint:
+    runs-on: ubuntu-22.04
+
+    steps:
+
+      - name: Checking out workspace
+        uses: jeeshan12/resusable_workflows/.github/actions/setup/workspace@v2.3.0
+
+      - name: Scanning for gitleaks
+        uses: gitleaks/gitleaks-action@e6dab246340401bf53eec993b8f05aebe80ac636 #v2.3.4
+        with:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+
+
