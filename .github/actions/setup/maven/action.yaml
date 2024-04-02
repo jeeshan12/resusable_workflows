@@ -26,8 +26,8 @@ runs:
           cache: ${{ inputs.cache }}
 
      -  name: check maven version
-        run: bash
-        shell: |
+        shell: bash
+        run: |
             echo Maven version is "$(mvn -v)"
 
 
