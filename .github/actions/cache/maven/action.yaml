@@ -1,0 +1,25 @@
+name: "Maven Cache"
+
+description: >
+    Action to cache maven dependencies
+
+inputs:
+  distribution:
+    description: "Java Distribution"
+    required: false
+    default: "corretto"
+  java-version:
+    description: "Java version to use"
+    required: false
+    default: "17"
+
+runs:
+  using: composite
+  steps:
+      - name: Cache Maven packages
+        uses: actions/cache@0c45773b623bea8c8e75f6c82b208c3cf94ea4f9 #v4.0.2
+        with:
+          path: ~/.m2
+          key: ${{ runner.os }}-m2-${{ inputs.distribution }}-${{ inputs.java-version }}-${{ hashFiles('**/pom.xml') }}
+          restore-keys: ${{ runner.os }}-m2-${{ inputs.distribution }}-${{ inputs.java-version }}
+
