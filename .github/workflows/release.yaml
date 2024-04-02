@@ -30,12 +30,24 @@ jobs:
           npx semantic-release
           SEMANTIC_RELEASE_EXIT_CODE=$?
           if [ $SEMANTIC_RELEASE_EXIT_CODE -eq 0 ]; then
-            npm version patch --no-git-tag-version
             git config --local user.email "action@github.com"
             git config --local user.name "GitHub Action"
+
+            RELEASE_VERSION=$(git tag --sort=-version:refname | head -n1)
+            PACKAGE_VERSION=$(echo "$RELEASE_VERSION" | sed 's/^v//')
+
+            jq '.version = $version' --arg version "$PACKAGE_VERSION" package.json > tmpfile && mv tmpfile package.json
+
             git add package.json
-            git commit -m "fix(package.json): updated package.json after the release"
+
+            # find ./.github -type f \( -name '*.yml' -a -name '*.yaml' \) -exec sed -i "s/^\(feat\|fix\|epic\|release\)[a-zA-Z0-9_-]*/$RELEASE_VERSION/g" {} +
+            # if [[ $(git status --porcelain | grep "^ M .github/") ]]; then
+            #   git add .github/
+            # fi
+
+            git commit -m "ci(workflow): updated branches and package.json after the release to latest release version"
             git push
+
           fi
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

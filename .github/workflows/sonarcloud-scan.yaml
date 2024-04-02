@@ -50,7 +50,7 @@ jobs:
           restore-keys: ${{ runner.os }}-sonar
 
       - name: Cache Maven dependencies
-        uses: jeeshan12/resusable_workflows/.github/actions/cache/maven@feat-sonarcloud-workflow
+        uses: jeeshan12/resusable_workflows/.github/actions/cache/maven@v2.5.0
         with:
           distribution: ${{ inputs.distribution }}
           java-version: ${{ inputs.java-version }}
