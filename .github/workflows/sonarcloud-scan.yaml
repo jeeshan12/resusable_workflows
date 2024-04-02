@@ -36,7 +36,7 @@ jobs:
         uses: jeeshan12/resusable_workflows/.github/actions/setup/workspace@v2.4.0
 
       - name: Setting up Maven and Java
-        uses: jeeshan12/resusable_workflows/.github/actions/setup/maven@v2.4.0
+        uses: jeeshan12/resusable_workflows/.github/actions/setup/maven@feat-sonarcloud-workflow
         with:
           distribution: ${{ inputs.distribution }}
           java-version: ${{ inputs.java-version }}
