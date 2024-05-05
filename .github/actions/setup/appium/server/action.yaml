@@ -32,7 +32,7 @@ runs:
             cwd=$(pwd)
             pushd "$cwd"
             cd ~
-            appium driver doctor uiautomator2
+            appium driver install  uiautomator2
             nohup appium server \
               --port=${{ inputs.appium-test-server-port }} \
               --address=${{ inputs.appium-test-server-address }} \
