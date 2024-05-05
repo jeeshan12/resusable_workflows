@@ -1,0 +1,9 @@
+name: "Start Appium Server"
+description: >
+    Action to start the appium server
+
+runs:
+  using: composite
+  steps:
+      - name: Install and Run Appium Server
+        uses: moatazeldebsy/appium-server-gitHub-action@83ca930a0d803c6760a15e5394e0f3ba1abad75c #v1.0.7

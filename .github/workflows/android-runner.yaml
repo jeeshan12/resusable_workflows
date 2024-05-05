@@ -1,0 +1,53 @@
+name: Emulator
+
+on:
+  workflow_call:
+    inputs:
+      distribution:
+        required: false
+        type: string
+        default: "corretto"
+
+      java-version:
+        required: false
+        type: string
+        default: "21"
+
+      api-level:
+        description: "API level for emulators"
+        required: false
+        type: string
+        default: "29"
+
+      cache:
+        required: false
+        type: string
+        default: "maven"
+
+jobs:
+  emulator-runner:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checking out workspace
+        uses: jeeshan12/resusable_workflows/.github/actions/setup/workspace@v2.4.0
+
+      - name: Setting up Maven and Java
+        uses: jeeshan12/resusable_workflows/.github/actions/setup/maven@v2.5.1
+        with:
+          distribution: ${{ inputs.distribution }}
+          java-version: ${{ inputs.java-version }}
+          cache: ${{ inputs.cache }}
+
+      - name: Setting up Node
+        uses: jeeshan12/resusable_workflows/.github/actions/setup/node@v2.5.1
+        with:
+          nvmrc-file: ".nvmrc"
+
+      - name: Setting up Appium server
+        uses: jeeshan12/resusable_workflows/.github/actions/setup/appium/server@feat-appium-android-gha
+
+      - name: Setting up Emulator
+        uses: jeeshan12/resusable_workflows/.github/actions/setup/appium/emulator@feat-appium-android-gha
+        with:
+          api-level: ${{ inputs.api-level }}
