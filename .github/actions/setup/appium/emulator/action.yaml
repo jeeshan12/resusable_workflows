@@ -37,6 +37,8 @@ runs:
           script: |
               echo "Generated AVD snapshot for caching."
               emulator -list-avds
+          disable-spellchecker: true
+
 
      - name: Wait for emulator to start
        shell: bash
