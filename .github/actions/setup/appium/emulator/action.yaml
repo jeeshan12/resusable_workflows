@@ -40,8 +40,3 @@ runs:
           script: |
               echo "Generated AVD snapshot for caching."
           disable-spellchecker: true
-
-
-     - name: Wait for emulator to start
-       shell: bash
-       run: adb wait-for-device
