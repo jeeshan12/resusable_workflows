@@ -10,12 +10,12 @@ inputs:
   node-version:
     description: 'Node version  to install '
     required: false
-    default: '20.x'
+    default: ''
 
 runs:
   using: composite
   steps:
-     -  name: Prepare the tag for docker image
+     -  name: Install node
         uses: actions/setup-node@60edb5dd545a775178f52524783378180af0d1f8 #v4.0.2
         with:
           node-version-file: ${{ inputs.nvmrc-file }}

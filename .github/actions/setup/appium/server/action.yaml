@@ -1,0 +1,50 @@
+name: "Start Appium Server"
+description: >
+    Action to start the appium server
+
+inputs:
+    appium-test-server-port:
+        description: Port to run appium server
+        required: false
+        default: "4567"
+
+    appium-test-server-address:
+        description: Address for appium server
+        required: false
+        default: "127.0.0.1"
+
+    api-level:
+      description: "API level for emulators"
+      required: false
+      default: "29"
+runs:
+  using: composite
+  steps:
+      - name: Install appium dependencies
+        shell: bash
+        run: |
+             npm install -g appium
+             npm install --no-save mjpeg-consumer
+
+      - name: Start appium server
+        shell: bash
+        run: |
+            cwd=$(pwd)
+            pushd "$cwd"
+            cd ~
+            appium driver install  uiautomator2
+            nohup appium server \
+              --port=${{ inputs.appium-test-server-port }} \
+              --address=${{ inputs.appium-test-server-address }} \
+              --relaxed-security \
+              --log-no-colors \
+              --log-timestamp \
+              2>&1 > "$cwd/appium.log" &
+            popd
+
+      - name: Save server output
+        if: ${{ always() }}
+        uses: actions/upload-artifact@65462800fd760344b1a7b4382951275a0abb4808 #4.3.3
+        with:
+         name: appium-api${{ inputs.api-level }}
+         path: appium.log

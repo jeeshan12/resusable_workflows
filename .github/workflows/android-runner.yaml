@@ -1,0 +1,76 @@
+name: Emulator
+
+on:
+  workflow_call:
+    inputs:
+      distribution:
+        required: false
+        type: string
+        default: "corretto"
+
+      java-version:
+        required: false
+        type: string
+        default: "21"
+
+      api-level:
+        description: "API level for emulators"
+        required: false
+        type: string
+        default: "29"
+
+      cache:
+        required: false
+        type: string
+        default: "maven"
+
+      appium-test-server-port:
+        description: Port to run appium server
+        required: false
+        default: "4567"
+        type: string
+
+      appium-test-server-address:
+        description: Address for appium server
+        required: false
+        default: "127.0.0.1"
+        type: string
+
+      avd-name:
+        description: "Name for the virtual device"
+        required: false
+        default: "emulator"
+        type: string
+
+jobs:
+  emulator-runner:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checking out workspace
+        uses: jeeshan12/resusable_workflows/.github/actions/setup/workspace@v2.4.0
+
+      - name: Setting up Maven and Java
+        uses: jeeshan12/resusable_workflows/.github/actions/setup/maven@v2.5.1
+        with:
+          distribution: ${{ inputs.distribution }}
+          java-version: ${{ inputs.java-version }}
+          cache: ${{ inputs.cache }}
+
+      - name: Setting up Node
+        uses: jeeshan12/resusable_workflows/.github/actions/setup/node@v2.7.0
+        with:
+          nvmrc-file: ".nvmrc"
+
+      - name: Setting up Appium server
+        uses: jeeshan12/resusable_workflows/.github/actions/setup/appium/server@v2.7.0
+        with:
+          api-level: ${{ inputs.api-level }}
+          appium-test-server-port: ${{ inputs.appium-test-server-port}}
+          appium-test-server-address: ${{ inputs.appium-test-server-address}}
+
+      - name: Setting up Emulator
+        uses: jeeshan12/resusable_workflows/.github/actions/setup/appium/emulator@v2.7.0
+        with:
+          api-level: ${{ inputs.api-level }}
+          avd-name: ${{ inputs.avd-name }}
