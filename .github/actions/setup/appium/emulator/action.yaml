@@ -7,6 +7,11 @@ inputs:
     required: false
     default: "29"
 
+  avd-name:
+    description: "Name for the virtual device"
+    required: false
+    default: "emulator"
+
 runs:
   using: composite
   steps:
@@ -19,10 +24,6 @@ runs:
 
      - name: Setup Android SDK
        uses: android-actions/setup-android@00854ea68c109d98c75d956347303bf7c45b0277 #v3.2.1
-
-     - run: nohup adb logcat > logcat.log &
-       name: Capture logcat
-       shell: bash
 
      - name: AVD cache
        uses: actions/cache@0c45773b623bea8c8e75f6c82b208c3cf94ea4f9 #v4.0.2
@@ -44,10 +45,8 @@ runs:
           script: |
               echo "Generated AVD snapshot for caching."
           disable-spellchecker: true
+          avd-name: ${{ inputs.avd-name }}
 
-     - name: Save logcat output
-       if: ${{ always() }}
-       uses: actions/upload-artifact@65462800fd760344b1a7b4382951275a0abb4808 #4.3.3
-       with:
-        name: logcat-api${{ inputs.api-level }}
-        path: logcat.log
+     - run: adb devices
+       name: List devices
+       shell: bash

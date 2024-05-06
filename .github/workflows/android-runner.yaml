@@ -36,6 +36,12 @@ on:
         default: "127.0.0.1"
         type: string
 
+      avd-name:
+        description: "Name for the virtual device"
+        required: false
+        default: "emulator"
+        type: string
+
 jobs:
   emulator-runner:
     runs-on: ubuntu-latest
@@ -67,3 +73,4 @@ jobs:
         uses: jeeshan12/resusable_workflows/.github/actions/setup/appium/emulator@feat-appium-android-gha
         with:
           api-level: ${{ inputs.api-level }}
+          avd-name: ${{ inputs.avd-name }}
