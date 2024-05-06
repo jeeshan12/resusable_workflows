@@ -58,19 +58,19 @@ jobs:
           cache: ${{ inputs.cache }}
 
       - name: Setting up Node
-        uses: jeeshan12/resusable_workflows/.github/actions/setup/node@feat-appium-android-gha
+        uses: jeeshan12/resusable_workflows/.github/actions/setup/node@v2.7.0
         with:
           nvmrc-file: ".nvmrc"
 
       - name: Setting up Appium server
-        uses: jeeshan12/resusable_workflows/.github/actions/setup/appium/server@feat-appium-android-gha
+        uses: jeeshan12/resusable_workflows/.github/actions/setup/appium/server@v2.7.0
         with:
           api-level: ${{ inputs.api-level }}
           appium-test-server-port: ${{ inputs.appium-test-server-port}}
           appium-test-server-address: ${{ inputs.appium-test-server-address}}
 
       - name: Setting up Emulator
-        uses: jeeshan12/resusable_workflows/.github/actions/setup/appium/emulator@feat-appium-android-gha
+        uses: jeeshan12/resusable_workflows/.github/actions/setup/appium/emulator@v2.7.0
         with:
           api-level: ${{ inputs.api-level }}
           avd-name: ${{ inputs.avd-name }}
