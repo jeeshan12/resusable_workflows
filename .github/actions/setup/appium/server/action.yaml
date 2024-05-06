@@ -42,10 +42,6 @@ runs:
               2>&1 > "$cwd/appium.log" &
             popd
 
-      - run: nohup adb logcat > logcat.log &
-        name: Capture logcat
-        shell: bash
-
       - name: Save server output
         if: ${{ always() }}
         uses: actions/upload-artifact@65462800fd760344b1a7b4382951275a0abb4808 #4.3.3
