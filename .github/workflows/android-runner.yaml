@@ -42,6 +42,11 @@ on:
         default: "emulator"
         type: string
 
+      script:
+        description: "Script to execute on emulator"
+        required: true
+        type: string
+
 jobs:
   emulator-runner:
     runs-on: ubuntu-latest
@@ -70,7 +75,8 @@ jobs:
           appium-test-server-address: ${{ inputs.appium-test-server-address}}
 
       - name: Setting up Emulator
-        uses: jeeshan12/resusable_workflows/.github/actions/setup/appium/emulator@v2.7.0
+        uses: jeeshan12/resusable_workflows/.github/actions/setup/appium/emulator@fix-emulator-workflow
         with:
           api-level: ${{ inputs.api-level }}
           avd-name: ${{ inputs.avd-name }}
+          script: ${{ inputs.script }}
