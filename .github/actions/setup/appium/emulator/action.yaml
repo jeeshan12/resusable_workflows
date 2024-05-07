@@ -46,7 +46,3 @@ runs:
               echo "Generated AVD snapshot for caching."
           disable-spellchecker: true
           avd-name: ${{ inputs.avd-name }}
-
-     - run: adb devices
-       name: List devices
-       shell: bash
