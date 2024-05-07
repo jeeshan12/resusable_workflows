@@ -12,11 +12,6 @@ inputs:
     required: false
     default: "emulator"
 
-  script:
-    description: "Script to execute on emulator"
-    required: true
-
-
 runs:
   using: composite
   steps:
@@ -48,7 +43,7 @@ runs:
           emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
           disable-animations: false
           script: |
-              ${{ inputs.script }}
+              echo "Generated AVD snapshot for caching."
           disable-spellchecker: true
           avd-name: ${{ inputs.avd-name }}
 
