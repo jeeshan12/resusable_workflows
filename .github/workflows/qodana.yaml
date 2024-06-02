@@ -1,0 +1,23 @@
+name: Qodana Scan on CI
+
+on:
+  workflow_call:
+    secrets:
+      qodana-token:
+        description: Qodana token to scan the repo
+        required: true
+
+jobs:
+  commitlint:
+    runs-on: ubuntu-22.04
+
+    steps:
+      - name: Checking out workspace
+        uses: jeeshan12/resusable_workflows/.github/actions/setup/workspace@v2.4.0
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+
+      - name: Qodana Scan
+        uses: JetBrains/qodana-action@32840fdb87f8dd110e0a6b09323c7142b667b25d #v2024.1.5
+        env:
+          QODANA_TOKEN: ${{ secrets.qodana-token }}
