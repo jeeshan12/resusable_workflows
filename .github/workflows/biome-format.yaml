@@ -1,0 +1,17 @@
+name: SonarCloud
+
+on:
+  workflow_call:
+
+jobs:
+  biome:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checking out workspace
+        uses: jeeshan12/resusable_workflows/.github/actions/setup/workspace@v2.4.0
+
+      - uses: mongolyy/reviewdog-action-biome@cce3b3f8c3261005a292d37a92407c29020420c2 #v1.3.4
+        with:
+          github_token: ${{ secrets.github_token }}
+          reporter: github-pr-review
