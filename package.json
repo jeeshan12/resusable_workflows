@@ -1,6 +1,6 @@
 {
   "name": "resusable_workflows",
-  "version": "2.7.1",
+  "version": "2.8.0",
   "description": "This repository contains the reusable workflows for GitHub actions",
   "main": "index.js",
   "scripts": {
