@@ -8,8 +8,8 @@ on:
         required: true
 
 jobs:
-  commitlint:
-    runs-on: ubuntu-22.04
+  qodana-scan:
+    runs-on: ubuntu-latest
 
     steps:
       - name: Checking out workspace
