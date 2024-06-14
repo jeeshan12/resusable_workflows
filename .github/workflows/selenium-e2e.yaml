@@ -22,6 +22,31 @@ on:
         required: true
         type: string
 
+      pom-file:
+        required: false
+        type: string
+        default: "pom.xml"
+
+      chrome-version:
+        required: false
+        default: "latest"
+        type: string
+
+      install-dependencies:
+        type: boolean
+        required: false
+        default: false
+
+      install-chromedriver:
+        type: boolean
+        required: false
+        default: false
+
+      firefox-version:
+        type: string
+        required: false
+        default: "latest-esr"
+
 jobs:
   selenium-e2e:
     runs-on: ubuntu-latest
@@ -48,7 +73,19 @@ jobs:
         run: |
           mvn clean install -DskipTests
 
+      - name: Install chrome browser
+        uses: jeeshan12/resusable_workflows/.github/actions/setup/browser/chrome@feat-run-e2e-maven
+        with:
+          chrome-version: ${{ inputs.chrome-version }}
+          install-dependencies: ${{ inputs.install-dependencies }}
+          install-chromedriver: ${{ inputs.install-chromedriver }}
+
+      - name: Install firefox browser
+        uses: jeeshan12/resusable_workflows/.github/actions/setup/browser/firefox@feat-run-e2e-maven
+        with:
+          firefox-version: ${{ inputs.firefox-version }}
+
       - name: Run selenium tests
         shell: bash
         run: |
-          mvn test -Dfile=${{ inputs.xml-file }}
+          mvn test -f ${{ inputs.pom-file }} -Dfile=${{ inputs.xml-file }} -Dheadless=true

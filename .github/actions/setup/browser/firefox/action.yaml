@@ -1,0 +1,16 @@
+name: "Install Firefox"
+description: >
+    Action to install firefox
+inputs:
+  firefox-version:
+    description: "Firefox version to install"
+    required: false
+    default: "latest-esr"
+
+runs:
+  using: composite
+  steps:
+     -  name: Set up firefox
+        uses: browser-actions/setup-firefox@7eb6921a7449833b6356d5b61f7bba79b4e65ed3 #v1.5.1
+        with:
+          firefox-version: ${{ inputs.firefox-version }}
