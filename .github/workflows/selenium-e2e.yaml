@@ -74,14 +74,14 @@ jobs:
           mvn clean install -DskipTests
 
       - name: Install chrome browser
-        uses: jeeshan12/resusable_workflows/.github/actions/setup/browser/chrome@feat-run-e2e-maven
+        uses: jeeshan12/resusable_workflows/.github/actions/setup/browser/chrome@v2.10.0
         with:
           chrome-version: ${{ inputs.chrome-version }}
           install-dependencies: ${{ inputs.install-dependencies }}
           install-chromedriver: ${{ inputs.install-chromedriver }}
 
       - name: Install firefox browser
-        uses: jeeshan12/resusable_workflows/.github/actions/setup/browser/firefox@feat-run-e2e-maven
+        uses: jeeshan12/resusable_workflows/.github/actions/setup/browser/firefox@v2.10.0
         with:
           firefox-version: ${{ inputs.firefox-version }}
 
