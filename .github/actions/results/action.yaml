@@ -1,0 +1,16 @@
+name: Publish Test Results
+description: >
+    Action to publish test results
+inputs:
+  file-path:
+    description: "Path of test results file to upload e.g. testng.xml, results.json etc"
+    required: true
+
+runs:
+  using: composite
+  steps:
+     -  name: Publish Test Results
+        uses: EnricoMi/publish-unit-test-result-action@30eadd5010312f995f0d3b3cff7fe2984f69409e #v2.16.1
+        with:
+          files: |
+              ${{ inputs.file-path }}
