@@ -47,6 +47,11 @@ on:
         required: false
         default: "latest-esr"
 
+      file-path:
+        description: "Path of test results file to upload e.g. testng.xml, results.json etc"
+        required: true
+        type: string
+
 jobs:
   selenium-e2e:
     runs-on: ubuntu-latest
@@ -87,5 +92,12 @@ jobs:
 
       - name: Run selenium tests
         shell: bash
+        id: e2e-run
         run: |
           mvn test -f ${{ inputs.pom-file }} -Dfile=${{ inputs.xml-file }} -Dheadless=true
+
+      - name: Upload test results
+        if: steps.e2e-run.outcome == 'success' || steps.e2e-run.outcome == 'failure'
+        uses: jeeshan12/resusable_workflows/.github/actions/results@vfeat-publish-reports
+        with:
+          file-path: ${{ inputs.file-path }}
