@@ -1,0 +1,91 @@
+name: Selenium e2e
+
+on:
+  workflow_call:
+    inputs:
+      distribution:
+        required: false
+        type: string
+        default: "corretto"
+
+      java-version:
+        required: false
+        type: string
+        default: "21"
+
+      cache:
+        required: false
+        type: string
+        default: "maven"
+
+      xml-file:
+        required: true
+        type: string
+
+      pom-file:
+        required: false
+        type: string
+        default: "pom.xml"
+
+      chrome-version:
+        required: false
+        default: "latest"
+        type: string
+
+      install-dependencies:
+        type: boolean
+        required: false
+        default: false
+
+      install-chromedriver:
+        type: boolean
+        required: false
+        default: false
+
+      firefox-version:
+        type: string
+        required: false
+        default: "latest-esr"
+
+jobs:
+  selenium-e2e:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checking out workspace
+        uses: jeeshan12/resusable_workflows/.github/actions/setup/workspace@v2.4.0
+
+      - name: Setting up Maven and Java
+        uses: jeeshan12/resusable_workflows/.github/actions/setup/maven@v2.5.1
+        with:
+          distribution: ${{ inputs.distribution }}
+          java-version: ${{ inputs.java-version }}
+          cache: ${{ inputs.cache }}
+
+      - name: Cache Maven dependencies
+        uses: jeeshan12/resusable_workflows/.github/actions/cache/maven@v2.5.0
+        with:
+          distribution: ${{ inputs.distribution }}
+          java-version: ${{ inputs.java-version }}
+
+      - name: Build test suite
+        shell: bash
+        run: |
+          mvn clean install -DskipTests
+
+      - name: Install chrome browser
+        uses: jeeshan12/resusable_workflows/.github/actions/setup/browser/chrome@v2.10.0
+        with:
+          chrome-version: ${{ inputs.chrome-version }}
+          install-dependencies: ${{ inputs.install-dependencies }}
+          install-chromedriver: ${{ inputs.install-chromedriver }}
+
+      - name: Install firefox browser
+        uses: jeeshan12/resusable_workflows/.github/actions/setup/browser/firefox@v2.10.0
+        with:
+          firefox-version: ${{ inputs.firefox-version }}
+
+      - name: Run selenium tests
+        shell: bash
+        run: |
+          mvn test -f ${{ inputs.pom-file }} -Dfile=${{ inputs.xml-file }} -Dheadless=true

@@ -1,0 +1,26 @@
+name: "Install Chrome"
+description: >
+    Action to install chrome
+inputs:
+  chrome-version:
+    description: "Chrome version to install"
+    required: false
+    default: "latest"
+  install-dependencies:
+    description: "Dependency for Google chrome"
+    required: false
+    default: "false"
+  install-chromedriver:
+     description: "Chromedriver to install"
+     required: false
+     default: "false"
+
+runs:
+  using: composite
+  steps:
+     -  name: Set up chrome
+        uses: browser-actions/setup-chrome@db1b524c26f20a8d1a10f7fc385c92387e2d0477 #v1.7.1
+        with:
+          chrome-version: ${{ inputs.chrome-version }}
+          install-chromedriver: ${{ inputs.install-chromedriver }}
+          install-dependencies: ${{ inputs.install-dependencies }}
