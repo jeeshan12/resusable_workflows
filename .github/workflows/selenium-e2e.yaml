@@ -98,6 +98,6 @@ jobs:
 
       - name: Upload test results
         if: steps.e2e-run.outcome == 'success' || steps.e2e-run.outcome == 'failure'
-        uses: jeeshan12/resusable_workflows/.github/actions/results@vfeat-publish-reports
+        uses: jeeshan12/resusable_workflows/.github/actions/results@feat-publish-reports
         with:
           file-path: ${{ inputs.file-path }}
