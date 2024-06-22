@@ -38,6 +38,15 @@ on:
         type: string
         default: ""
 
+      xml-file:
+        required: true
+        type: string
+
+      pom-file:
+        required: false
+        type: string
+        default: "pom.xml"
+
 jobs:
   selenium-docker-grid:
     runs-on: ubuntu-latest
@@ -69,3 +78,12 @@ jobs:
           firefox-version: ${{ inputs.firefox-version}}
           selenium-hub-version: ${{ inputs.selenium-hub-version }}
           browser: ${{ inputs.browser }}
+
+      - name: Run selenium tests
+        shell: bash
+        run: |
+          if [ -z "${{ inputs.browser }}" ]; then
+              mvn test -f ${{ inputs.pom-file }} -Dfile=${{ inputs.xml-file }} -Dheadless=true
+          else
+              mvn test -f ${{ inputs.pom-file }} -Dfile=${{ inputs.xml-file }} -Dheadless=true  -Dbrowser=${{ inputs.browser }}
+          fi

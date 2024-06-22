@@ -110,4 +110,3 @@ runs:
       - name: Verify Selenium Grid
         shell: bash
         run: curl -s http://localhost:4444/status
-
