@@ -54,10 +54,11 @@ jobs:
           distribution: ${{ inputs.distribution }}
           java-version: ${{ inputs.java-version }}
 
-      - name: Build test suite
-        shell: bash
-        run: |
-          mvn clean install -DskipTests
+      - name: Install docker
+        uses: jeeshan12/resusable_workflows/.github/actions/build/docker@feat-selenium-grid-gha
+        with:
+          distribution: ${{ inputs.distribution }}
+          java-version: ${{ inputs.java-version }}
 
       - name: Set up selenium grid
         uses: jeeshan12/resusable_workflows/.github/actions/grid@feat-selenium-grid-gha

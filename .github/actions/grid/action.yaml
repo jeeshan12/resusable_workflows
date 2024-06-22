@@ -20,6 +20,11 @@ inputs:
 runs:
   using: composite
   steps:
+      - name: Create network for selenium grid
+        shell: bash
+        run: |
+          docker network create grid
+
       - name: Pull Selenium Hub Image
         shell: bash
         run: |
@@ -28,27 +33,29 @@ runs:
 
       - name: Run Selenium Hub Container
         shell: bash
-        run: docker run -d -p 4444:4444 --name selenium-hub hub-cache
+        run: docker run -d -p 4442-4444:4442-4444 --net grid --name selenium-hub hub-cache
 
-      - name: Pull Selenium Node Chrome Image
+      - name: Pull and run Selenium Node Chrome Image
         shell: bash
         run: |
            docker pull selenium/node-chrome:${{ inputs.chrome-version }}
            docker tag selenium/node-chrome:${{ inputs.chrome-version }} node-chrome-cache
+           docker run -d --net grid -e SE_EVENT_BUS_HOST=selenium-hub \
+            --shm-size="2g" \
+            -e SE_EVENT_BUS_PUBLISH_PORT=4442 \
+            -e SE_EVENT_BUS_SUBSCRIBE_PORT=4443 \
+            node-chrome-cache
 
-      - name: Run Selenium Node Chrome Container
-        shell: bash
-        run: docker run -d --link selenium-hub:hub node-chrome-cache
-
-      - name: Pull Selenium Node Firefox Image
+      - name: Pull and run Selenium Node Firefox Image
         shell: bash
         run: |
           docker pull selenium/node-firefox:${{ inputs.firefox-version }}
           docker tag selenium/node-firefox:${{ inputs.firefox-version }} node-firefox-cache
-
-      - name: Run Selenium Node Firefox Container
-        shell: bash
-        run: docker run -d --link selenium-hub:hub node-firefox-cache
+          docker run -d --net grid -e SE_EVENT_BUS_HOST=selenium-hub \
+             --shm-size="2g" \
+             -e SE_EVENT_BUS_PUBLISH_PORT=4442 \
+             -e SE_EVENT_BUS_SUBSCRIBE_PORT=4443 \
+              node-firefox-cache
 
       - name: Verify Selenium Grid
         shell: bash
