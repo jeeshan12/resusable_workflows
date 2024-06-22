@@ -43,12 +43,12 @@ runs:
         shell: bash
         run: |
             if [ "${{ inputs.browser }}" == "firefox" ]; then
-                docker pull selenium/node-chrome:${{ inputs.chrome-version }}
-                docker tag selenium/node-chrome:${{ inputs.chrome-version }} node-chrome-cache
-
-            elif [ "${{ inputs.browser }}" == "chrome" ]; then
                 docker pull selenium/node-firefox:${{ inputs.firefox-version }}
                 docker tag selenium/node-firefox:${{ inputs.firefox-version }} node-firefox-cache
+
+            elif [ "${{ inputs.browser }}" == "chrome" ]; then
+                docker pull selenium/node-chrome:${{ inputs.chrome-version }}
+                docker tag selenium/node-chrome:${{ inputs.chrome-version }} node-chrome-cache
 
             else
                docker pull selenium/node-chrome:${{ inputs.chrome-version }}
