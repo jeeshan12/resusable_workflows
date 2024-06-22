@@ -66,6 +66,7 @@ runs:
                   -e SE_EVENT_BUS_PUBLISH_PORT=4442 \
                   -e SE_EVENT_BUS_SUBSCRIBE_PORT=4443 \
                   node-firefox-cache
+
             elif [ "${{ inputs.browser }}" == "chrome" ]; then
                 docker run -d --net grid -e SE_EVENT_BUS_HOST=selenium-hub \
                   --shm-size="2g" \
@@ -85,6 +86,26 @@ runs:
                   -e SE_EVENT_BUS_SUBSCRIBE_PORT=4443 \
                   node-firefox-cache
             fi
+
+      - name: Install jq
+        shell: bash
+        run: sudo apt-get install -y jq
+
+
+      - name: Wait for Selenium Hub to be ready
+        shell: bash
+        run: |
+            echo "Waiting for Selenium Hub to be ready..."
+            SECONDS=0
+            while [ "$(curl -s http://localhost:4444/status | jq -r .value.ready)" != "true" ]; do
+              if [ $SECONDS -gt 60 ]; then
+                  echo "Selenium Hub did not become ready in time."
+                  exit 1
+              fi
+              echo "Selenium Hub is not ready yet. Waiting..."
+              sleep 5
+            done
+            echo "Selenium Hub is ready."
 
       - name: Verify Selenium Grid
         shell: bash
