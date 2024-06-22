@@ -1,0 +1,56 @@
+name: "Selenium Grid"
+
+description: >
+    Set up Selenium Grid to run tests on Selenium docker grid
+
+inputs:
+  chrome-version:
+    description: "Chrome version"
+    required: false
+    default: "latest"
+  firefox-version:
+    description: "Firefox version"
+    required: false
+    default: "latest"
+  selenium-hub-version:
+    description: "Selenium hub version"
+    required: false
+    default: "latest"
+
+runs:
+  using: composite
+  steps:
+      - name: Pull Selenium Hub Image
+        shell: bash
+        run: |
+          docker pull selenium/hub:${{ inputs.selenium-hub-version }}
+          docker tag selenium/hub:${{ inputs.selenium-hub-version }} hub-cache
+
+      - name: Run Selenium Hub Container
+        shell: bash
+        run: docker run -d -p 4444:4444 --name selenium-hub hub-cache
+
+      - name: Pull Selenium Node Chrome Image
+        shell: bash
+        run: |
+           docker pull selenium/node-chrome:${{ inputs.chrome-version }}
+           docker tag selenium/node-chrome:${{ inputs.chrome-version }} node-chrome-cache
+
+      - name: Run Selenium Node Chrome Container
+        shell: bash
+        run: docker run -d --link selenium-hub:hub node-chrome-cache
+
+      - name: Pull Selenium Node Firefox Image
+        shell: bash
+        run: |
+          docker pull selenium/node-firefox:${{ inputs.firefox-version }}
+          docker tag selenium/node-firefox:${{ inputs.firefox-version }} node-firefox-cache
+
+      - name: Run Selenium Node Firefox Container
+        shell: bash
+        run: docker run -d --link selenium-hub:hub node-firefox-cache
+
+      - name: Verify Selenium Grid
+        shell: bash
+        run: curl -s http://localhost:4444/status
+
