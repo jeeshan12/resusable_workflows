@@ -36,7 +36,7 @@ on:
       browser:
         required: false
         type: string
-        default: "chrome"
+        default: ""
 
 jobs:
   selenium-docker-grid:
