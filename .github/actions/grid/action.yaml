@@ -44,17 +44,17 @@ runs:
         run: |
             if [ "${{ inputs.browser }}" == "firefox" ]; then
                 docker pull selenium/node-chrome:${{ inputs.chrome-version }}
-                docker tag selenium/node-chrome:${{ inputs.chrome-version }} node-${{ inputs.chrome-version }}-cache
+                docker tag selenium/node-chrome:${{ inputs.chrome-version }} node-chrome-cache
 
             elif [ "${{ inputs.browser }}" == "chrome" ]; then
                 docker pull selenium/node-firefox:${{ inputs.firefox-version }}
-                docker tag selenium/node-firefox:${{ inputs.firefox-version }} node-${{ inputs.firefox-version }}-cache
+                docker tag selenium/node-firefox:${{ inputs.firefox-version }} node-firefox-cache
 
             else
                docker pull selenium/node-chrome:${{ inputs.chrome-version }}
-               docker tag selenium/node-chrome:${{ inputs.chrome-version }} node-${{ inputs.chrome-version }}-cache
+               docker tag selenium/node-chrome:${{ inputs.chrome-version }} node-chrome-cache
                docker pull selenium/node-firefox:${{ inputs.firefox-version }}
-               docker tag selenium/node-firefox:${{ inputs.firefox-version }} node-${{ inputs.firefox-version }}-cache
+               docker tag selenium/node-firefox:${{ inputs.firefox-version }} node-firefox-cache
             fi
 
       - name: Run Selenium Node Containers
@@ -65,25 +65,25 @@ runs:
                   --shm-size="2g" \
                   -e SE_EVENT_BUS_PUBLISH_PORT=4442 \
                   -e SE_EVENT_BUS_SUBSCRIBE_PORT=4443 \
-                  node-${{ inputs.chrome-version }}-cache
+                  node-firefox-cache
             elif [ "${{ inputs.browser }}" == "chrome" ]; then
                 docker run -d --net grid -e SE_EVENT_BUS_HOST=selenium-hub \
                   --shm-size="2g" \
                   -e SE_EVENT_BUS_PUBLISH_PORT=4442 \
                   -e SE_EVENT_BUS_SUBSCRIBE_PORT=4443 \
-                  node-${{ inputs.chrome-version }}-cache
+                  node-chrome-cache
             else
                 docker run -d --net grid -e SE_EVENT_BUS_HOST=selenium-hub \
                   --shm-size="2g" \
                   -e SE_EVENT_BUS_PUBLISH_PORT=4442 \
                   -e SE_EVENT_BUS_SUBSCRIBE_PORT=4443 \
-                  node-${{ inputs.chrome-version }}-cache
+                  node-chrome-cache
 
                 docker run -d --net grid -e SE_EVENT_BUS_HOST=selenium-hub \
                   --shm-size="2g" \
                   -e SE_EVENT_BUS_PUBLISH_PORT=4442 \
                   -e SE_EVENT_BUS_SUBSCRIBE_PORT=4443 \
-                  node-${{ inputs.chrome-version }}-cache
+                  node-firefox-cache
             fi
 
       - name: Verify Selenium Grid

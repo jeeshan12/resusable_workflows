@@ -36,7 +36,7 @@ on:
       browser:
         required: false
         type: string
-        default: ""
+        default: "chrome"
 
 jobs:
   selenium-docker-grid:
@@ -61,9 +61,6 @@ jobs:
 
       - name: Install docker
         uses: jeeshan12/resusable_workflows/.github/actions/build/docker@feat-selenium-grid-gha
-        with:
-          distribution: ${{ inputs.distribution }}
-          java-version: ${{ inputs.java-version }}
 
       - name: Set up selenium grid
         uses: jeeshan12/resusable_workflows/.github/actions/grid@feat-selenium-grid-gha
