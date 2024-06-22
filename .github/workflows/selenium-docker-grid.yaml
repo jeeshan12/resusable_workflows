@@ -33,6 +33,11 @@ on:
         type: string
         default: "latest"
 
+      browser:
+        required: false
+        type: string
+        default: ""
+
 jobs:
   selenium-docker-grid:
     runs-on: ubuntu-latest
@@ -66,3 +71,4 @@ jobs:
           chrome-version: ${{ inputs.chrome-version }}
           firefox-version: ${{ inputs.firefox-version}}
           selenium-hub-version: ${{ inputs.selenium-hub-version }}
+          browser: ${{ inputs.browser }}

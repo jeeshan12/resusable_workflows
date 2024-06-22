@@ -16,6 +16,10 @@ inputs:
     description: "Selenium hub version"
     required: false
     default: "latest"
+  browser:
+    description: "Browser for execution"
+    required: false
+    default: ""
 
 runs:
   using: composite
@@ -35,27 +39,52 @@ runs:
         shell: bash
         run: docker run -d -p 4442-4444:4442-4444 --net grid --name selenium-hub hub-cache
 
-      - name: Pull and run Selenium Node Chrome Image
+      - name: Pull Selenium Node Containers
         shell: bash
         run: |
-           docker pull selenium/node-chrome:${{ inputs.chrome-version }}
-           docker tag selenium/node-chrome:${{ inputs.chrome-version }} node-chrome-cache
-           docker run -d --net grid -e SE_EVENT_BUS_HOST=selenium-hub \
-            --shm-size="2g" \
-            -e SE_EVENT_BUS_PUBLISH_PORT=4442 \
-            -e SE_EVENT_BUS_SUBSCRIBE_PORT=4443 \
-            node-chrome-cache
+            if [ "${{ inputs.browser }}" == "firefox" ]; then
+                docker pull selenium/node-chrome:${{ inputs.chrome-version }}
+                docker tag selenium/node-chrome:${{ inputs.chrome-version }} node-${{ inputs.chrome-version }}-cache
 
-      - name: Pull and run Selenium Node Firefox Image
+            elif [ "${{ inputs.browser }}" == "chrome" ]; then
+                docker pull selenium/node-firefox:${{ inputs.firefox-version }}
+                docker tag selenium/node-firefox:${{ inputs.firefox-version }} node-${{ inputs.firefox-version }}-cache
+
+            else
+               docker pull selenium/node-chrome:${{ inputs.chrome-version }}
+               docker tag selenium/node-chrome:${{ inputs.chrome-version }} node-${{ inputs.chrome-version }}-cache
+               docker pull selenium/node-firefox:${{ inputs.firefox-version }}
+               docker tag selenium/node-firefox:${{ inputs.firefox-version }} node-${{ inputs.firefox-version }}-cache
+            fi
+
+      - name: Run Selenium Node Containers
         shell: bash
         run: |
-          docker pull selenium/node-firefox:${{ inputs.firefox-version }}
-          docker tag selenium/node-firefox:${{ inputs.firefox-version }} node-firefox-cache
-          docker run -d --net grid -e SE_EVENT_BUS_HOST=selenium-hub \
-             --shm-size="2g" \
-             -e SE_EVENT_BUS_PUBLISH_PORT=4442 \
-             -e SE_EVENT_BUS_SUBSCRIBE_PORT=4443 \
-              node-firefox-cache
+            if [ "${{ inputs.browser }}" == "firefox" ]; then
+                docker run -d --net grid -e SE_EVENT_BUS_HOST=selenium-hub \
+                  --shm-size="2g" \
+                  -e SE_EVENT_BUS_PUBLISH_PORT=4442 \
+                  -e SE_EVENT_BUS_SUBSCRIBE_PORT=4443 \
+                  node-${{ inputs.chrome-version }}-cache
+            elif [ "${{ inputs.browser }}" == "chrome" ]; then
+                docker run -d --net grid -e SE_EVENT_BUS_HOST=selenium-hub \
+                  --shm-size="2g" \
+                  -e SE_EVENT_BUS_PUBLISH_PORT=4442 \
+                  -e SE_EVENT_BUS_SUBSCRIBE_PORT=4443 \
+                  node-${{ inputs.chrome-version }}-cache
+            else
+                docker run -d --net grid -e SE_EVENT_BUS_HOST=selenium-hub \
+                  --shm-size="2g" \
+                  -e SE_EVENT_BUS_PUBLISH_PORT=4442 \
+                  -e SE_EVENT_BUS_SUBSCRIBE_PORT=4443 \
+                  node-${{ inputs.chrome-version }}-cache
+
+                docker run -d --net grid -e SE_EVENT_BUS_HOST=selenium-hub \
+                  --shm-size="2g" \
+                  -e SE_EVENT_BUS_PUBLISH_PORT=4442 \
+                  -e SE_EVENT_BUS_SUBSCRIBE_PORT=4443 \
+                  node-${{ inputs.chrome-version }}-cache
+            fi
 
       - name: Verify Selenium Grid
         shell: bash
