@@ -1,0 +1,89 @@
+name: "Selenium Grid"
+
+description: >
+    Set up Selenium Grid to run tests on Selenium docker grid
+
+inputs:
+  chrome-version:
+    description: "Chrome version"
+    required: false
+    default: "latest"
+  firefox-version:
+    description: "Firefox version"
+    required: false
+    default: "latest"
+  selenium-hub-version:
+    description: "Selenium hub version"
+    required: false
+    default: "latest"
+  browser:
+    description: "Browser for execution"
+    required: false
+    default: ""
+
+runs:
+  using: composite
+  steps:
+      - name: Create network for selenium grid
+        shell: bash
+        run: |
+          docker network create grid
+
+      - name: Pull Selenium Hub Image
+        shell: bash
+        run: |
+          docker pull selenium/hub:${{ inputs.selenium-hub-version }}
+          docker tag selenium/hub:${{ inputs.selenium-hub-version }} hub-cache
+
+      - name: Run Selenium Hub Container
+        shell: bash
+        run: docker run -d -p 4442-4444:4442-4444 --net grid --name selenium-hub hub-cache
+
+      - name: Pull Selenium Node Containers
+        shell: bash
+        run: |
+          docker pull selenium/node-chrome:${{ inputs.chrome-version }}
+          docker tag selenium/node-chrome:${{ inputs.chrome-version }} node-chrome-cache
+          docker pull selenium/node-firefox:${{ inputs.firefox-version }}
+          docker tag selenium/node-firefox:${{ inputs.firefox-version }} node-firefox-cache
+
+
+      - name: Run Selenium Node Containers
+        shell: bash
+        run: |
+          docker run -d --net grid -e SE_EVENT_BUS_HOST=selenium-hub \
+            --shm-size="2g" \
+            -e SE_EVENT_BUS_PUBLISH_PORT=4442 \
+            -e SE_EVENT_BUS_SUBSCRIBE_PORT=4443 \
+             node-chrome-cache
+
+          docker run -d --net grid -e SE_EVENT_BUS_HOST=selenium-hub \
+            --shm-size="2g" \
+            -e SE_EVENT_BUS_PUBLISH_PORT=4442 \
+            -e SE_EVENT_BUS_SUBSCRIBE_PORT=4443 \
+             node-firefox-cache
+
+
+      - name: Install jq
+        shell: bash
+        run: sudo apt-get install -y jq
+
+
+      - name: Wait for Selenium Hub to be ready
+        shell: bash
+        run: |
+            echo "Waiting for Selenium Hub to be ready..."
+            SECONDS=0
+            while [ "$(curl -s http://localhost:4444/status | jq -r .value.ready)" != "true" ]; do
+              if [ $SECONDS -gt 60 ]; then
+                  echo "Selenium Hub did not become ready in time."
+                  exit 1
+              fi
+              echo "Selenium Hub is not ready yet. Waiting..."
+              sleep 5
+            done
+            echo "Selenium Hub is ready."
+
+      - name: Verify Selenium Grid
+        shell: bash
+        run: curl -s http://localhost:4444/status

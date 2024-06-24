@@ -1,0 +1,89 @@
+name: Selenium e2e
+
+on:
+  workflow_call:
+    inputs:
+      distribution:
+        required: false
+        type: string
+        default: "corretto"
+
+      java-version:
+        required: false
+        type: string
+        default: "21"
+
+      cache:
+        required: false
+        type: string
+        default: "maven"
+
+      chrome-version:
+        required: false
+        type: string
+        default: "latest"
+
+      firefox-version:
+        required: false
+        type: string
+        default: "latest"
+
+      selenium-hub-version:
+        required: false
+        type: string
+        default: "latest"
+
+      browser:
+        required: false
+        type: string
+        default: ""
+
+      xml-file:
+        required: true
+        type: string
+
+      pom-file:
+        required: false
+        type: string
+        default: "pom.xml"
+
+jobs:
+  selenium-docker-grid:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checking out workspace
+        uses: jeeshan12/resusable_workflows/.github/actions/setup/workspace@v2.4.0
+
+      - name: Setting up Maven and Java
+        uses: jeeshan12/resusable_workflows/.github/actions/setup/maven@v2.5.1
+        with:
+          distribution: ${{ inputs.distribution }}
+          java-version: ${{ inputs.java-version }}
+          cache: ${{ inputs.cache }}
+
+      - name: Cache Maven dependencies
+        uses: jeeshan12/resusable_workflows/.github/actions/cache/maven@v2.5.0
+        with:
+          distribution: ${{ inputs.distribution }}
+          java-version: ${{ inputs.java-version }}
+
+      - name: Install docker
+        uses: jeeshan12/resusable_workflows/.github/actions/build/docker@feat-selenium-grid-gha
+
+      - name: Set up selenium grid
+        uses: jeeshan12/resusable_workflows/.github/actions/grid@feat-selenium-grid-gha
+        with:
+          chrome-version: ${{ inputs.chrome-version }}
+          firefox-version: ${{ inputs.firefox-version}}
+          selenium-hub-version: ${{ inputs.selenium-hub-version }}
+          browser: ${{ inputs.browser }}
+
+      - name: Run selenium tests
+        shell: bash
+        run: |
+          if [ -z "${{ inputs.browser }}" ]; then
+              mvn test -f ${{ inputs.pom-file }} -Dfile=${{ inputs.xml-file }} -Dheadless=true
+          else
+              mvn test -f ${{ inputs.pom-file }} -Dfile=${{ inputs.xml-file }} -Dheadless=true  -Dbrowser=${{ inputs.browser }}
+          fi
