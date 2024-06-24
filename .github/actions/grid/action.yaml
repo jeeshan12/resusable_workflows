@@ -42,50 +42,27 @@ runs:
       - name: Pull Selenium Node Containers
         shell: bash
         run: |
-            if [ "${{ inputs.browser }}" == "firefox" ]; then
-                docker pull selenium/node-firefox:${{ inputs.firefox-version }}
-                docker tag selenium/node-firefox:${{ inputs.firefox-version }} node-firefox-cache
+          docker pull selenium/node-chrome:${{ inputs.chrome-version }}
+          docker tag selenium/node-chrome:${{ inputs.chrome-version }} node-chrome-cache
+          docker pull selenium/node-firefox:${{ inputs.firefox-version }}
+          docker tag selenium/node-firefox:${{ inputs.firefox-version }} node-firefox-cache
 
-            elif [ "${{ inputs.browser }}" == "chrome" ]; then
-                docker pull selenium/node-chrome:${{ inputs.chrome-version }}
-                docker tag selenium/node-chrome:${{ inputs.chrome-version }} node-chrome-cache
-
-            else
-               docker pull selenium/node-chrome:${{ inputs.chrome-version }}
-               docker tag selenium/node-chrome:${{ inputs.chrome-version }} node-chrome-cache
-               docker pull selenium/node-firefox:${{ inputs.firefox-version }}
-               docker tag selenium/node-firefox:${{ inputs.firefox-version }} node-firefox-cache
-            fi
 
       - name: Run Selenium Node Containers
         shell: bash
         run: |
-            if [ "${{ inputs.browser }}" == "firefox" ]; then
-                docker run -d --net grid -e SE_EVENT_BUS_HOST=selenium-hub \
-                  --shm-size="2g" \
-                  -e SE_EVENT_BUS_PUBLISH_PORT=4442 \
-                  -e SE_EVENT_BUS_SUBSCRIBE_PORT=4443 \
-                  node-firefox-cache
+          docker run -d --net grid -e SE_EVENT_BUS_HOST=selenium-hub \
+            --shm-size="2g" \
+            -e SE_EVENT_BUS_PUBLISH_PORT=4442 \
+            -e SE_EVENT_BUS_SUBSCRIBE_PORT=4443 \
+             node-chrome-cache
 
-            elif [ "${{ inputs.browser }}" == "chrome" ]; then
-                docker run -d --net grid -e SE_EVENT_BUS_HOST=selenium-hub \
-                  --shm-size="2g" \
-                  -e SE_EVENT_BUS_PUBLISH_PORT=4442 \
-                  -e SE_EVENT_BUS_SUBSCRIBE_PORT=4443 \
-                  node-chrome-cache
-            else
-                docker run -d --net grid -e SE_EVENT_BUS_HOST=selenium-hub \
-                  --shm-size="2g" \
-                  -e SE_EVENT_BUS_PUBLISH_PORT=4442 \
-                  -e SE_EVENT_BUS_SUBSCRIBE_PORT=4443 \
-                  node-chrome-cache
+          docker run -d --net grid -e SE_EVENT_BUS_HOST=selenium-hub \
+            --shm-size="2g" \
+            -e SE_EVENT_BUS_PUBLISH_PORT=4442 \
+            -e SE_EVENT_BUS_SUBSCRIBE_PORT=4443 \
+             node-firefox-cache
 
-                docker run -d --net grid -e SE_EVENT_BUS_HOST=selenium-hub \
-                  --shm-size="2g" \
-                  -e SE_EVENT_BUS_PUBLISH_PORT=4442 \
-                  -e SE_EVENT_BUS_SUBSCRIBE_PORT=4443 \
-                  node-firefox-cache
-            fi
 
       - name: Install jq
         shell: bash
